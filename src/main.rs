@@ -1,4 +1,4 @@
-fn main() -> Result<(), std::fmt::Error> {
+fn main() -> anyhow::Result<()> {
     println!("Hello world, there are no hashes here");
     Ok(())
 }
