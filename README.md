@@ -6,6 +6,9 @@ _A **D**irectory H**asher**_
 directory tree down to a single hash digest. Thus, you can tell that _something_ has
 changed in the tree (but not _what_ has changed) if the hash has changed.
 
+`dasher` currently only uses and supports the SHA3-256 hashing algorithm, but more may
+be added in future.
+
 ## Installation
 
 `dasher` is easiest to install via Cargo
@@ -19,7 +22,14 @@ that way.
 
 ## Usage
 
-`dasher` currently does not have a CLI, but it is in the works.
+`dasher` has a very simple CLI, akin to other hashing tools like `sha1sum`. Simply call
+`dasher` with one or more paths and `dasher` will return the hash for each of them.
+
+```
+$ dasher src test_data
+6a181e4113e4c2abf39ada58158772316fe0444d3476c084759148fdd5be7e8c        src
+3b5e49ac9126759771d677bdacbc18a63ff94ad4e07718c18347254d7b9c6cb1        test_data
+```
 
 ## Hashing scheme
 
