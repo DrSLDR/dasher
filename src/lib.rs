@@ -227,11 +227,13 @@ fn node_dir_hash(
     let hasher = Sha3_256::new()
         .chain_update(name)
         .chain_update([NodeType::Directory.to_u8()]);
-    let q = cache.get_mut(&(entry.depth() + 1)).unwrap();
-    let data = q
-        .drain(..)
-        .collect::<Vec<Vec<u8>>>()
-        .join(&NodeType::DirSeparator.to_u8());
+    let data = match cache.get_mut(&(entry.depth() + 1)) {
+        Some(q) => q
+            .drain(..)
+            .collect::<Vec<Vec<u8>>>()
+            .join(&NodeType::DirSeparator.to_u8()),
+        None => Vec::new(),
+    };
     Vec::from(hasher.chain_update(data).finalize().as_slice())
 }
 
