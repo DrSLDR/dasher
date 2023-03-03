@@ -104,20 +104,16 @@ pub fn hash_directories(paths: Vec<PathBuf>) -> Result<Vec<u8>, HashError> {
 
     paths.sort();
 
-    let mut hasher = Sha3_256::new();
-    let mut first = true;
+    let hasher = Sha3_256::new();
 
-    for path in paths.iter() {
-        if !first {
-            hasher.update([NodeType::DirSeparator.to_u8()]);
-        } else {
-            first = false;
-        }
-        let hash = hash_directory(path.clone())?;
-        hasher.update(hash);
-    }
+    let data = paths
+        .iter()
+        .cloned()
+        .map(|p| hash_directory(p))
+        .collect::<Result<Vec<_>, HashError>>()?
+        .join(&NodeType::DirSeparator.to_u8());
 
-    Ok(Vec::from(hasher.finalize().as_slice()))
+    Ok(Vec::from(hasher.chain_update(data).finalize().as_slice()))
 }
 
 /// Given a path to a directory, as a `PathBuf`, computes the directory hash and returns
