@@ -224,21 +224,15 @@ fn node_dir_hash(
     entry: &DirEntry,
     name: Vec<u8>,
 ) -> Vec<u8> {
-    let mut hasher = Sha3_256::new()
+    let hasher = Sha3_256::new()
         .chain_update(name)
         .chain_update([NodeType::Directory.to_u8()]);
-    let mut first: bool = true;
     let q = cache.get_mut(&(entry.depth() + 1)).unwrap();
-    for node in q.iter() {
-        if !first {
-            hasher.update([NodeType::DirSeparator.to_u8()]);
-        } else {
-            first = false;
-        }
-        hasher.update(node);
-    }
-    q.clear();
-    Vec::from(hasher.finalize().as_slice())
+    let data = q
+        .drain(..)
+        .collect::<Vec<Vec<u8>>>()
+        .join(&NodeType::DirSeparator.to_u8());
+    Vec::from(hasher.chain_update(data).finalize().as_slice())
 }
 
 #[cfg(test)]
