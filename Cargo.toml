@@ -1,6 +1,6 @@
 [package]
 name = "dasher"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Jonas A. Hultén <jonas@sldr.se>"]
 repository = "https://github.com/DrSLDR/dasher"
 homepage = "https://github.com/DrSLDR/dasher"
