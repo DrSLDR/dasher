@@ -99,12 +99,13 @@ impl From<ContentError> for HashError {
 /// the result. The input does not have to be sorted, but will be sorted prior to
 /// hashing, in order to ensure quirks of calling this function won't result in
 /// inconsistent results.
+///
+/// If the input is a singleton vector, i.e. a vector with only one element, calling
+/// this function is equivalent to calling `hash_directory` on that element. If the
+/// input is an empty vector, the null-hash is returned.
 pub fn hash_directories(paths: Vec<PathBuf>) -> Result<Vec<u8>, HashError> {
     let mut paths = paths.clone();
-
     paths.sort();
-
-    let hasher = Sha3_256::new();
 
     let data = paths
         .iter()
@@ -113,7 +114,12 @@ pub fn hash_directories(paths: Vec<PathBuf>) -> Result<Vec<u8>, HashError> {
         .collect::<Result<Vec<_>, HashError>>()?
         .join(&NodeType::DirSeparator.to_u8());
 
-    Ok(Vec::from(hasher.chain_update(data).finalize().as_slice()))
+    match paths.len() {
+        1 => Ok(data),
+        _ => Ok(Vec::from(
+            Sha3_256::new().chain_update(data).finalize().as_slice(),
+        )),
+    }
 }
 
 /// Given a path to a directory, as a `PathBuf`, computes the directory hash and returns
