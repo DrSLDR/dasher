@@ -322,4 +322,24 @@ mod tests {
             hex!("9fe82ef81c21f04ed6050b650fdef5c441fa49db43b2aaf7e383f7466778b026")
         )
     }
+
+    #[test]
+    fn hash_test_data_just_one_via_directories() {
+        // one node:        9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d
+        let input = vec![PathBuf::from("test_data/one")];
+        let result = crate::hash_directories(input).unwrap();
+        assert_eq!(
+            result[..],
+            hex!("9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d")
+        )
+    }
+
+    #[test]
+    fn hash_directories_empty_input() {
+        let result = crate::hash_directories(vec![]).unwrap();
+        assert_eq!(
+            result[..],
+            hex!("a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a")
+        )
+    }
 }
